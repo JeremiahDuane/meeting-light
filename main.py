@@ -1,30 +1,26 @@
 #!/usr/bin/env python
 import time
-from datetime import datetime
 import sys
 import os
 import json
 import pytz
-
+import socket
 import recurring_ical_events
 import icalendar
 import ics
+import webbrowser
+import requests
+import scapy.all as scapy
 
 from directories import DIRECTORIES
+from datetime import datetime
 
-GREEN = "Green"
-RED = "Red"
 ON = True
-ESCAPED_EVENTS = []
-
-class ScheduledEvent():
-    def __init__(self,id, start, end):
-        self.id = id
-        self.start = start
-        self.end = end
-    def isCurrent(self):
-        now = datetime.now()
-        return self.start >= now and self.end < now
+IS_BUSY = False
+IS_FREE = False
+BUSY_IDENTIFIER = "RED"
+FREE_IDENTIFIER = "GREEN"
+OTHER_IDENTIFIER = "WHITE"
 
 def GetCalendar(directories):
     calendar = icalendar.Calendar()
@@ -52,41 +48,57 @@ def GetCalendar(directories):
                             calendar.add_component(event)
     return calendar
 
-def EscapeEvent(id):
-    ESCAPED_EVENTS.append(id)
-
-def HandleSchedule():
-    if CheckIsBusy():
-        Emit(GREEN)
-    else:
-        Emit(RED)
-
-def Emit(color):
-    return False
-
 def CheckIsBusy():
     directories = DIRECTORIES
     calendar = GetCalendar(directories)
     now = datetime.now().astimezone(pytz.UTC)
     events = recurring_ical_events.of(calendar).at((now.year, now.month, now.day, now.hour, now.minute))
-    # for event in events:
-    #     start = event["DTSTART"].dt
-    #     duration = event["DTEND"].dt - event["DTSTART"].dt
-    #     print("start {} duration {}".format(start, duration))
 
     if len(events) > 0:
         return True
     else:
         return False
 
-print(CheckIsBusy())
-# try:
-#     print("Press CTRL-C to stop.")
-#     while ON:
-#         time.sleep(.25)
-#         HandleSchedule()
-# except KeyboardInterrupt:
-#     sys.exit(0)
+def HandleSchedule():
+    global IS_FREE
+    global IS_BUSY
+    if CheckIsBusy():
+        if not IS_BUSY:
+            HandleBusy()
+            IS_BUSY = True
+            IS_FREE = False
+    elif IS_BUSY or not IS_FREE:
+        HandleFree()
+        IS_BUSY = False    
+        IS_FREE = True 
 
+def HandleBusy():
+    #webbrowser.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+    SendMessage(BUSY_IDENTIFIER)
 
+def HandleFree():
+    SendMessage(FREE_IDENTIFIER)
 
+#Communications
+def SendMessage(message):
+    with open("./bin/addresses.txt", "r") as f:
+        for address in f:
+            print("Sent "+ "http://" + address + '/' + message)
+            try:
+                r = requests.post("http://" + address + '/' + message)
+                r.close()
+            except requests.exceptions.ConnectionError:
+                continue
+
+#Main
+def Main():
+    try:
+        print("Press CTRL-C to stop.")
+        while ON:
+            HandleSchedule()
+            time.sleep(60)
+    except KeyboardInterrupt:
+        sys.exit(0)
+
+if __name__ == "__main__":
+    Main()
