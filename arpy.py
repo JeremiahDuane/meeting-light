@@ -26,4 +26,4 @@ def scan_subnet_for_hosts(subn = '192.168.1.0/24'):
 scan_subnet_for_hosts()
 with open("./bin/addresses.txt", "w") as f:
     for host in live_hosts:
-        f.write(str(host))
+        f.write(str(host)+"\n")

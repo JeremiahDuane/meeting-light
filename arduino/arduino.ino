@@ -1,34 +1,34 @@
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
 #define RED_LED 12
-#define WHITE_LED 13
+#define BLUE_LED 13
 #define GREEN_LED 14
 
 void RED() {
   digitalWrite(RED_LED, HIGH); 
 }
-void WHITE() {
-  digitalWrite(WHITE_LED, HIGH); 
+void BLUE() {
+  digitalWrite(BLUE_LED, HIGH); 
 }
 void GREEN() {
   digitalWrite(GREEN_LED, HIGH); 
 }
 void OFF() {
   digitalWrite(RED_LED, LOW); 
-  digitalWrite(WHITE_LED, LOW); 
+  digitalWrite(BLUE_LED, LOW); 
   digitalWrite(GREEN_LED, LOW);
 }
 const char* ssid = "jgage_netgear";
 const char* password = "melodicboat789";
 
 ; // 
-WiFiServer server(80);
+WiFiServer server(8787);
  
 void setup() {
   Serial.begin(115200);
   delay(10);
   pinMode(RED_LED, OUTPUT);
-  pinMode(WHITE_LED, OUTPUT);
+  pinMode(BLUE_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
  
   // Connect to WiFi network
@@ -81,9 +81,9 @@ void loop() {
     OFF();
     RED();
   }
-  if (request.indexOf("/WHITE") >0)  {
+  if (request.indexOf("/BLUE") >0)  {
     OFF();
-    WHITE();
+    BLUE();
   }
   if (request.indexOf("/GREEN") > 0)  {
     OFF();

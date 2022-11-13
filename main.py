@@ -20,7 +20,7 @@ IS_BUSY = False
 IS_FREE = False
 BUSY_IDENTIFIER = "RED"
 FREE_IDENTIFIER = "GREEN"
-OTHER_IDENTIFIER = "WHITE"
+OTHER_IDENTIFIER = "BLUE"
 
 def GetCalendar(directories):
     calendar = icalendar.Calendar()
@@ -53,6 +53,10 @@ def CheckIsBusy():
     calendar = GetCalendar(directories)
     now = datetime.now().astimezone(pytz.UTC)
     events = recurring_ical_events.of(calendar).at((now.year, now.month, now.day, now.hour, now.minute))
+    # for event in events:
+    #     start = event["DTSTART"].dt
+    #     duration = event["DTEND"].dt - event["DTSTART"].dt
+    #     print("start {} duration {}".format(start, duration))
 
     if len(events) > 0:
         return True
@@ -81,11 +85,12 @@ def HandleFree():
 
 #Communications
 def SendMessage(message):
+    port = "8787"
     with open("./bin/addresses.txt", "r") as f:
         for address in f:
-            print("Sent "+ "http://" + address + '/' + message)
+            print("http://" + address + ":" + port + "/" + message)
             try:
-                r = requests.post("http://" + address + '/' + message)
+                r = requests.post("http://" + address + ":" + port + "/" + message)
                 r.close()
             except requests.exceptions.ConnectionError:
                 continue
