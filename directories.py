@@ -1,3 +1,3 @@
 DIRECTORIES = [
-    "/Users/jgage6/Library/Calendars/4A301FBC-5919-4EF5-B702-35C49FF4B570.exchange/A9F0E9AC-CCDA-47CA-A19E-6B56154B38C5.calendar/Events"
+    "/Users/jgage6/Library/Calendars/DF638ACE-35DD-4B40-BDFB-F16C4FEAA848.exchange/7AC86885-E345-4C49-9F65-99E32362B4F8.calendar/Events"
 ]

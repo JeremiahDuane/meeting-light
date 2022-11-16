@@ -1,14 +1,19 @@
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
-#define RED_LED 12
-#define BLUE_LED 13
-#define GREEN_LED 14
+#define RED_LED 13
+#define BLUE_LED 14
+#define GREEN_LED 12
+bool running = false;
 
 void RED() {
   digitalWrite(RED_LED, HIGH); 
 }
 void BLUE() {
   digitalWrite(BLUE_LED, HIGH); 
+}
+void ORANGE() {
+  digitalWrite(RED_LED, HIGH); 
+  digitalWrite(GREEN_LED, HIGH); 
 }
 void GREEN() {
   digitalWrite(GREEN_LED, HIGH); 
@@ -81,9 +86,9 @@ void loop() {
     OFF();
     RED();
   }
-  if (request.indexOf("/BLUE") >0)  {
+  if (request.indexOf("/ORANGE") >0)  {
     OFF();
-    BLUE();
+    ORANGE();
   }
   if (request.indexOf("/GREEN") > 0)  {
     OFF();
@@ -92,4 +97,16 @@ void loop() {
   if (request.indexOf("/OFF") > 0)  {
     OFF();
   }
-}
+
+  // Return the response
+  client.println("HTTP/1.1 200 OK");
+  client.println("Content-Type: text/html");
+  client.println(""); //  do not forget this one
+  client.println("<!DOCTYPE HTML>");
+  client.println("<html>");
+  client.println("Led pin is set");
+  client.println("<br><br>");
+  client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
+  client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
+  client.println("</html>");
+ }
