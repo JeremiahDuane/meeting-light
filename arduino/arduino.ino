@@ -13,7 +13,7 @@ void BLUE() {
 }
 void ORANGE() {
   digitalWrite(RED_LED, HIGH); 
-  digitalWrite(GREEN_LED, HIGH); 
+  analogWrite(GREEN_LED, 64);
 }
 void GREEN() {
   digitalWrite(GREEN_LED, HIGH); 

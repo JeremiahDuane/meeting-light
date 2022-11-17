@@ -35,7 +35,6 @@ def HandleSchedule():
 
 def HandleBusy():
     #webbrowser.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-    print(identifiers)
     SendMessage(identifiers["busy"])
 
 def HandleFree():
