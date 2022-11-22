@@ -1,9 +1,17 @@
+#LIBRARIES
 import socket
 import ipaddress
 
-def scan_subnet_for_hosts(subn = '192.168.1.0/24'):
+#LOCAL
+from config import Port, Subnet
+
+##
+#*    Scan supplied subnet for devices listening to dedicated
+#*    meeting light port.
+##
+def ScanSubnetForHosts(subn = Subnet):
     live_hosts = []
-    ports = [8787]
+    ports = [Port]
     network = ipaddress.IPv4Network(subn)
     for ipaddr in list(network.hosts()):
         for port in ports:
@@ -19,9 +27,16 @@ def scan_subnet_for_hosts(subn = '192.168.1.0/24'):
             except socket.error:
                 continue
 
-    with open("./bin/addresses.txt", "w") as f:
-        for host in live_hosts:
-            f.write(str(host)+"\n")
+    return live_hosts
 
+##
+#*  Persist found hosts across GUI instances
+##
+def SaveHosts(hosts):
+    with open("./bin/addresses.txt", "w") as f:
+        for host in hosts:
+            f.write(f"{str(host)}:{Port}\n")
+
+#MAIN
 if __name__ == "__main__":
     scan_subnet_for_hosts()

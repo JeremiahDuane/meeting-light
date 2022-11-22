@@ -1,5 +1,7 @@
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
+#include "config.h" 
+
 #define RED_LED 13
 #define BLUE_LED 14
 #define GREEN_LED 12
@@ -23,11 +25,9 @@ void OFF() {
   digitalWrite(BLUE_LED, LOW); 
   digitalWrite(GREEN_LED, LOW);
 }
-const char* ssid = "jgage_netgear";
-const char* password = "melodicboat789";
 
 ; // 
-WiFiServer server(8787);
+WiFiServer server(wifi_port);
  
 void setup() {
   Serial.begin(115200);
@@ -40,9 +40,9 @@ void setup() {
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");
-  Serial.println(ssid);
+  Serial.println(wifi_ssid);
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(wifi_ssid, wifi_pswd);
  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -54,12 +54,6 @@ void setup() {
   // Start the server
   server.begin();
   Serial.println("Server started");
- 
-  // Print the IP address
-  Serial.print("Use this URL to connect: ");
-  Serial.print("http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("/");
 }
  
 void loop() {
@@ -71,7 +65,7 @@ void loop() {
  
   // Wait until the client sends some data
   Serial.println("new client");
-  while(!client.available()){
+  while(!client.available() && client.available() != 0){
     delay(1);
   }
  
@@ -81,7 +75,6 @@ void loop() {
   client.flush();
  
   // Match the request
-
   if (request.indexOf("/RED") > 0)  {
     OFF();
     RED();
@@ -101,12 +94,9 @@ void loop() {
   // Return the response
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
-  client.println(""); //  do not forget this one
+  client.println("");
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
   client.println("Led pin is set");
-  client.println("<br><br>");
-  client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
-  client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
   client.println("</html>");
  }
