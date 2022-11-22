@@ -5,9 +5,6 @@ import os
 import pytz
 from datetime import datetime, timedelta
 
-#LOCAL
-from directories import DIRECTORIES
-
 ##
 #*    Read all .ics files from the list of directories and combine 
 #*    events into a single calendar object.
@@ -32,7 +29,9 @@ def GetCalendars(directories):
 ##
 def GetCurrentEvents():
     currentEvents = []
-    directories = DIRECTORIES
+    directories = []
+    for dir in open("./bin/directories.txt", "r"):
+        directories.append(dir)
     calendars = GetCalendars(directories)
     now = datetime.now()
 

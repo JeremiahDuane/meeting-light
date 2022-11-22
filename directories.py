@@ -1,3 +1,0 @@
-DIRECTORIES = [
-    "/Users/jgage6/Library/Calendars/DF638ACE-35DD-4B40-BDFB-F16C4FEAA848.exchange/7AC86885-E345-4C49-9F65-99E32362B4F8.calendar/Events"
-]
